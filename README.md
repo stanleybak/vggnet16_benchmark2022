@@ -4,4 +4,4 @@ A series of perturbations to correctly-classified images, ranging from single-pi
 
 To run, pip3 install mxnet and then do:
 
-python3 generate_instances.py <seed>
+`python3 generate_instances.py <seed>`
