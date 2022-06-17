@@ -283,7 +283,7 @@ def main():
             made_spec = make_spec(spec_index, onnx_filename, image_index, image_filename, spec_path)
 
             if made_spec:
-                f.write(f'{onnx_filename},{spec_path},20\n')
+                f.write(f'{onnx_filename},{spec_path},1200\n')
                     
                 num_images += 1
                 print(f"wrote {num_images} / {total_images}\n")
