@@ -1,4 +1,4 @@
-# vggnet16 benchmark for vnncomp2022
+# vggnet16 benchmark for vnncomp (updated for 2023)
 
 A series of perturbations to correctly-classified images, ranging from single-pixel attacks to l-infinity norm properties
 
