@@ -13,6 +13,15 @@ import numpy as np
 import onnx
 import onnxruntime as ort
 
+# first run pip3 install mxnet if needed
+import subprocess
+try:
+    import mxnet as mx
+except ImportError:
+    print('pip installing mxnet in current environment in 5 seconds (ctrl-c to cancel)')
+    time.sleep(5)
+    subprocess.run([sys.executable, '-m', 'pip', 'install', 'mxnet'])
+
 import mxnet as mx
 from mxnet.gluon.data.vision import transforms
 
@@ -259,12 +268,19 @@ def main():
     assert len(sys.argv) == 2, "expected 1 arg: <seed>"
     random.seed(int(sys.argv[1]))
 
+    # prepare vnnlib and onnx directories
+    for dirname in ['vnnlib', 'onnx']:
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
+        elif dirname == 'vnnlib':
+            for filename in os.listdir(dirname):
+                os.remove(os.path.join(dirname, filename))
+
     # download vggnet 16 if needed
+    if not os.path.exists('onnx/vgg16-7.onnx'):
+        os.system("wget https://github.com/onnx/models/raw/main/vision/classification/vgg/model/vgg16-7.onnx -O onnx/vgg16-7.onnx")
 
-    if not os.path.exists('vgg16-7.onnx'):
-        os.system("wget https://github.com/onnx/models/raw/main/vision/classification/vgg/model/vgg16-7.onnx")
-
-    onnx_filename = 'vgg16-7.onnx'
+    onnx_filename = 'onnx/vgg16-7.onnx'
     image_dir = "imagenet-sample"
 
     image_paths = get_image_paths(image_dir)
@@ -285,7 +301,7 @@ def main():
             name = image_filename[left_index:right_index]
             print(name)
 
-            spec_path = f'spec{num_images}_{name}.vnnlib'
+            spec_path = f'vnnlib/spec{num_images}_{name}.vnnlib'
 
             spec_index = num_images
             made_spec = make_spec(spec_index, onnx_filename, image_index, image_filename, spec_path)
