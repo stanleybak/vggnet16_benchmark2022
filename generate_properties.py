@@ -1,6 +1,7 @@
 '''
-vggnet16 vnncomp 2022 benchmark
+vggnet16 vnncomp 2023 benchmark
 
+Stanley Bak
 '''
 
 import sys
@@ -156,19 +157,19 @@ def make_spec(spec_index, onnx_filename, image_index, image_filename, spec_path)
     if top5_inds[0] != image_index:
         print(f'top1 was incorrect, got {top5_inds[0]} expected {image_index}')
             
-        return False
+        return ''
 
     # result was correct, produce the spec file
-    perturb_pixels = set()
-    perturb_eps = [1e-5, 1e-4, 1e-2][spec_index % 3]
-
     pixel_index = (spec_index // 3) % 6
     print(f"spec_index: {spec_index}, pixel_index: {pixel_index}")
     num_pixels = [1, 5, 10, 20, 100, 150528][pixel_index]
-    
-    for i in range(num_pixels):
-        p = random.randint(0, num_inputs)
-        perturb_pixels.add(p)
+
+    if num_pixels < 5000:
+        perturb_eps = [1e-5, 1e-4, 1e-3][spec_index % 3]
+    else:
+        perturb_eps = [1e-7, 1e-6, 1e-5][spec_index % 3]
+
+    perturb_pixels = set(random.sample(range(150528), num_pixels))
 
     print(f"perturbing {num_pixels} pixels by {perturb_eps}")
 
@@ -186,6 +187,13 @@ def make_spec(spec_index, onnx_filename, image_index, image_filename, spec_path)
         f.write('\n; Input constraints:\n')
 
         assert len(in_flat) == num_inputs
+
+        #for channel in range(3):
+        #    single_channel = input_tensor[:,channel,:,:].flatten()
+            # print min and max of in_flat
+        #    print(f"channel {channel}, min: {np.min(single_channel)}, max: {np.max(single_channel)}")
+            
+        #exit(1)
 
         for index, x in enumerate(in_flat):
 
