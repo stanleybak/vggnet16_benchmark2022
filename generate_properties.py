@@ -278,7 +278,7 @@ def main():
 
     # download vggnet 16 if needed
     if not os.path.exists('onnx/vgg16-7.onnx'):
-        os.system("wget https://github.com/onnx/models/raw/main/vision/classification/vgg/model/vgg16-7.onnx -O onnx/vgg16-7.onnx")
+        os.system("wget https://github.com/onnx/models/raw/bec48b6a70e5e9042c0badbaafefe4454e072d08/validated/vision/classification/vgg/model/vgg16-7.onnx -O onnx/vgg16-7.onnx")
 
     onnx_filename = 'onnx/vgg16-7.onnx'
     image_dir = "imagenet-sample"
